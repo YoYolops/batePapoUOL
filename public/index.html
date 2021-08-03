@@ -6,47 +6,60 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="./styles/reset.css" rel="stylesheet">
         <link href="./styles/styles.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script type="text/javascript" src="../src/globals.js"></script>
+        <script type="text/javascript" src="../src/index.js"></script>
     </head>
 
     <body>
-        <header>
-            <img src="../assets/img/logo.jpg">
-            <img src="../assets/icos/users.png">
-        </header>
+        <div id="entry-screen">
+            <header>
+                <img src="../assets/img/logo.jpg" alt="logo uol">
+            </header>
+            <input id="username"  type="text" placeholder="Digite seu nome" required><br>
+            <button onclick="login()">Entrar</button>
+        </div>
+        <div id="main-content-container" class="hidden">
+            <header>
+                <img class="logo" src="../assets/img/logo.jpg" alt="logo uol">
+                <img class="users-icon" src="../assets/icos/users.png" alt="users icon" onclick="toggleMenu(event)">
+            </header>
 
-        <aside>
-            <h3><strong>Escolha um contato para enviar mensagem:</strong></h3>
-            <ul>
-                <li>
-                    <img>
-                    <p>Todos</p>
-                    <img>
-                </li>
-            </ul>
-
-            <h3><strong>Escolha a visibilidade</strong></h3>
-            <ul>
-                <li>
-                    <img>
-                    <p>Público</p>
-                    <img>
-                </li>
-                <li>
-                    <img>
-                    <p>Reservadamente</p>
-                    <img>
-                </li>
-            </ul>
+            <main class="messages-container">
+                oie
+            </main>
+            
+            <footer>
+                <textarea type="text" placeholder="Escreva aqui..."></textarea>
+                <img class="send-ico" src="../assets/icos/send.png" alt="send icon">
+            </footer>
+        </div>
+        <aside onclick="toggleMenu(event)" id="menu-container" class="menu-container">
+            <div onclick="teste(event)" id="menu" class="menu">
+                <h3><strong>Escolha um contato para enviar mensagem:</strong></h3>
+                <ul>
+                    <li>
+                        <img>
+                        <p>Todos</p>
+                        <img>
+                    </li>
+                </ul>
+    
+                <h3><strong>Escolha a visibilidade</strong></h3>
+                <ul>
+                    <li>
+                        <img>
+                        <p>Público</p>
+                        <img>
+                    </li>
+                    <li>
+                        <img>
+                        <p>Reservadamente</p>
+                        <img>
+                    </li>
+                </ul>
+            </div>
         </aside>
-
-        <main>
-
-        </main>
-
-        <footer>
-
-        </footer>
     </body>
     <script type="text/javascript" src="../src/entryScreenManager.js"></script>
 </html>

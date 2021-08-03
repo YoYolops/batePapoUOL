@@ -1,16 +1,6 @@
 let GLOBAL = {
     logged: false,
+    api: axios.create({
+        baseURL: "https://mock-api.bootcamp.respondeai.com.br/api/v3/uol"
+    })
 };
-
-void function loadStoragedData() {
-    const data = localStorage.getItem("bpUolData");
-    if(data) GLOBAL = JSON.parse(data);
-}();
-
-function storageData() {
-    if(GLOBAL) localStorage.setItem("bpUolData", JSON.stringify(GLOBAL));
-}
-
-function clearStoragedData() {
-    localStorage.removeItem("bpUolData");
-}

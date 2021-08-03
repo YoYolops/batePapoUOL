@@ -1,44 +1,59 @@
-const entryScreenTemplate = (`
-    <main id="entry-screen">
-        <header>
-            <img src="../assets/img/logo.jpg" alt="logo uol">
-        </header>
-        <input id="username"  type="text" placeholder="Digite seu nome" required><br>
-        <button onclick="setGlobalUsername()">Entrar</button>
-    </main>
-`)
 
 /** 
- * Inserts a template to the entry screen layout if the user is not logged already
+ * Sets GLOBAL.username to the param value. Global object can be found on globals.js
+ * @param {String} username the inserted username
  */
-void function displayEntryScreen() {
-    if(!GLOBAL.logged) {
-        const body = document.querySelector("body");
-        body.innerHTML = entryScreenTemplate;
+function setGlobalUsername(username) {
+    GLOBAL.username = username;
+    GLOBAL.logged = true;
+}
+
+async function isValidUserName(username) {
+    if(username !== "") {
+        const response = await GLOBAL.api.post("/participants", {
+            name: username
+        })
+        if(response.status === 200) return true
     }
-}();
-
+    return false
+}
 
 /** 
- * Colects and veryfies if the input value is valid, setting the inserted username
- * in global variables. If an invalid name is inserted, the interface requires another
+ * Search the inserted value to be used as username
+ * @return {String} username the inserted name 
  */
-function setGlobalUsername() {
-    const username = document.querySelector("#username");
+function getUserName() {
+    username = document.querySelector("#username").value;
+    return username;
+}
 
-    if(username.value !== "") {
-        GLOBAL.username = username.value;
-        GLOBAL.logged = true;
-        displayMainContent();
+/** 
+ * Changes the input style, asking for a valid username
+ */
+function askValidUsername() {
+    const usernameInput = document.querySelector("#username")
+    usernameInput.style.border = "2px solid red";
+    usernameInput.placeholder = "Insira um nome válido"
+}
+
+/** 
+ * Finishes the login process if a valid username was inserted
+ */
+function login() {
+    const username = getUserName();
+    
+    if(isValidUserName(username)) {
+        setGlobalUsername(username);
+        hideEntryScreen();
     } else {
-        username.style.border = "2px solid red";
-        username.placeholder = "Insira um nome válido";
+        askValidUsername();
     }
 }
 
 /** 
  * Shows the chat itself and hides the entry screen
  */
-function displayMainContent() {
-    document.querySelector("#entry-screen").style.display = "none";
+function hideEntryScreen() {
+    document.querySelector("#entry-screen").className = "hidden";
+    document.querySelector("#main-content-container").className = "";
 }
