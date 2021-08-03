@@ -15,6 +15,10 @@ body {
     display: none !important;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
 #entry-screen {
     height: 100vh;
     width: 100vw;
@@ -115,12 +119,44 @@ body {
     top: 0;
     right: -500px;
     height: 100vh;
+    width: 270px;
     background-color: rgba(255, 255, 255, 1);
     transition: right 0.1s ease-in-out 0.1s;
 }
 
 .menu.active {
     right: 0;
+    padding: 0px 20px;
+}
+
+.menu h3 {
+    font-size: 16px;
+    text-align: center;
+    overflow-y: hidden;
+    font-weight: bolder;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu-left-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu-left-ico {
+    width: 25px;
+    margin-right: 10px;
+}
+
+.menu-right-ico {
+    width: 20px;
 }
 
 footer {

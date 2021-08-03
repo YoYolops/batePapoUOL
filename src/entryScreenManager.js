@@ -41,10 +41,11 @@ function askValidUsername() {
  */
 function login() {
     const username = getUserName();
-    
+
     if(isValidUserName(username)) {
         setGlobalUsername(username);
         hideEntryScreen();
+        startChatApp();
     } else {
         askValidUsername();
     }
