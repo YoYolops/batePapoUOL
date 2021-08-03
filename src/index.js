@@ -1,3 +1,6 @@
+/** 
+ * Start all functions that collect and keep conection with server
+ */
 function startChatApp() {
     keepConectionAlive();
     getMessages();
@@ -11,6 +14,9 @@ function toggleMenu(event) {
     }
 }
 
+/** 
+ * Keeps sending connection signals to backend, so it will know the user's still online
+ */
 function keepConectionAlive() {
     console.log("keepConectionAlive()")
     GLOBAL.conectionIntervalID = setInterval(() => {
@@ -19,6 +25,9 @@ function keepConectionAlive() {
     }, 5000)
 }
 
+/** 
+ * Gets all the messages sended to the backend every three seconds and sends its data to GLOBAL object
+ */
 function getMessages() {
     console.log("getMessages()")
     GLOBAL.messagesIntervalID = setInterval(async () => {
@@ -30,6 +39,9 @@ function getMessages() {
     }, 3000)
 }
 
+/** 
+ * Gets all the active users when its called and sends its data to GLOBAL object
+ */
 async function getOnlineUsers() {
     console.log("getOnlineUsers()")
     try {
@@ -42,6 +54,9 @@ async function getOnlineUsers() {
     }
 }
 
+/** 
+ * Inserts the online users data into DOM
+ */
 function displayOnlineUsers() {
     const onlineUsers = document.querySelector(".online-users");
     GLOBAL.onlineUsers.map(user => {
