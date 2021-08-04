@@ -36,19 +36,57 @@ function getMessages() {
         console.log("data received: ")
         console.log(response.data)
         GLOBAL.messages = response.data;
+        updateDisplayedMessagesManager();
     }, 3000)
 }
 
-function updateDisplayedMessagesManager() {
-    const alreadyDisplayedMessages = GLOBAL.renderedMessages;
-    const messagesReceivedFromBackend = GLOBAL.messages.length;
+function areTheseObjectsEqual(objOne, objTwo) {
+    if(Object.keys(objOne).length > Object.keys(objTwo).length) {
+        for(let key in objOne) {
+            if(objOne[key] !== objTwo[key]) {
+                return false;
+            }
+        }
+    } else {
+        for(let key in objTwo) {
+            if(objOne[key] !== objTwo[key]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
-    if(alreadyDisplayedMessages < messagesReceivedFromBackend) {
-        const messages = GLOBAL.messages.slice(alreadyDisplayedMessages);
-        messages.map(message => {
-            const htmlMessage = generateMessageHTML(message);
-            displayMessage(htmlMessage);
-        })
+/** 
+ * Verify if the server sended messages there were not inserted on screen yet,
+ * if there is any, this function starts the procedures to do reder them.
+ */
+function updateDisplayedMessagesManager() {
+    console.log("updateDisplayedMessagesManager()")
+    const newMessages = wichMessagesShouldBeAddedInHtml();
+    newMessages.map(message => {
+        const htmlMessage = generateMessageHTML(message);
+        displayMessage(htmlMessage);
+    })
+    GLOBAL.renderedMessages = Array.from(GLOBAL.messages);
+}
+
+function wichMessagesShouldBeAddedInHtml() {
+    console.log("wichMessagesShouldBeAddedInHtml()")
+    if(GLOBAL.renderedMessages.length === 0) {
+        GLOBAL.renderedMessages = Array.from(GLOBAL.messages);
+        return GLOBAL.messages;
+    }
+
+    const newMessages = [];
+    const lastRenderedMessage = GLOBAL.renderedMessages[GLOBAL.renderedMessages.length - 1];
+    for(let i=GLOBAL.messages.length-1; i>=0; i--) {
+        if(!areTheseObjectsEqual(GLOBAL.messages[i], lastRenderedMessage)) {
+            newMessages.push(GLOBAL.messages[i]);
+            console.log("adicionando obj: " + i);
+        } else {
+            return newMessages;
+        }
     }
 }
 
@@ -73,9 +111,8 @@ async function getOnlineUsers() {
 function displayOnlineUsers() {
     const onlineUsers = document.querySelector(".online-users");
     GLOBAL.onlineUsers.map(user => {
-        onlineUsers.appendChild(`
-            <li><img src="../assets/icos/singleUser.png"><span>${user.name}</span><img src="../assets/icos/verify.png"></li>
-        `)
+        const onlineUserHtmlTemplate = `<li><img src="../assets/icos/singleUser.png"><span>${user.name}</span><img src="../assets/icos/verify.png"></li>`;
+        onlineUsers.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
     })
 }
 
@@ -85,10 +122,10 @@ function displayOnlineUsers() {
  * @return {String} the HTML template string that can be used to display the message on the screen
  */
 function generateMessageHTML(messageJSON) {
-    const { from, to, text, type, time } = message;
+    const { from, to, text, type, time } = messageJSON;
     const messageTemplate = (
-        `<div class="${type}">
-            <span class="message-time">${time}</span>
+        `<div class="message-box ${type}">
+            <span class="message-time">(${time})</span>
             <span class="message-from-to"><strong>${from}</strong> para <strong>${to}</strong>:</span>
             <p class="message-text">${text}</p>
         </div>`
@@ -96,8 +133,24 @@ function generateMessageHTML(messageJSON) {
     return messageTemplate;
 }
 
+/** 
+ * Append messages on .messages-container
+ */
 function displayMessage(messageHTML) {
     const messageContainer = document.querySelector(".messages-container");
     messageContainer.insertAdjacentHTML("beforeend", messageHTML);
 }
 
+function sendMessage() {
+    const typedMessage = document.querySelector("footer > textarea").value;
+    const messageJSON = {
+        from: GLOBAL.username,
+        to: GLOBAL.messageConfig.to,
+        text: typedMessage,
+        type: GLOBAL.messageConfig.type
+    }
+
+    console.log(messageJSON)
+
+    GLOBAL.api.post("/messages", messageJSON);
+}

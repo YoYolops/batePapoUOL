@@ -11,6 +11,10 @@ body {
     overflow-x: hidden ;
 }
 
+strong {
+    font-weight: bolder;
+}
+
 .hidden {
     display: none !important;
 }
@@ -84,6 +88,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: fixed;
+    top: 0;
+    width: 100%;
 }
 
 .logo {
@@ -95,8 +102,28 @@ body {
 }
 
 .messages-container {
-    padding-top: 20px;
+    padding: 100px 0px 90px 0px;
 }
+
+.message-box {
+    width: 100%;
+    padding: 15px 10px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+.status {
+    background-color: var(--msg-bg-grey);
+}
+
+.private_message {
+    background-color: var(--msg-bg-pink);
+}
+
+.message {
+    background-color: #fff;
+}
+
 
 #menu-container {
     width: 100%;
