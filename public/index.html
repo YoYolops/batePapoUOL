@@ -36,7 +36,7 @@
             <div id="menu" class="menu">
                 <h3><strong>Escolha um contato para enviar mensagem:</strong></h3>
                 <ul class="online-users">
-                    <li>
+                    <li id="Todos" onclick="changeMessageReceiver(this, event)">
                         <div class="menu-left-section">
                             <img class="menu-left-ico" src="../assets/icos/users.png" alt="menu icon">
                             <p>Todos</p>
@@ -47,7 +47,7 @@
     
                 <h3><strong>Escolha a visibilidade</strong></h3>
                 <ul class="visibility-options">
-                    <li id="public-option" class="selected" onclick="changeVisibility(this, event)">
+                    <li id="public-option" onclick="changeVisibility(this, event)">
                         <div class="menu-left-section">
                             <img class="menu-left-ico" src="../assets/icos/unlock.png" alt="icone cadeado">
                             <p>Público</p>

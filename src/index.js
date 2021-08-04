@@ -16,7 +16,6 @@ function addEventListeners() {
 
 function toggleMenu(event) {
     event.stopPropagation();
-    console.log("toggleMenu()");
     if(event.target.tagName === "ASIDE" || event.target.className === "users-icon") {
         document.querySelector("#menu-container").classList.toggle("active");
         document.querySelector("#menu").classList.toggle("active");
@@ -27,9 +26,7 @@ function toggleMenu(event) {
  * Keeps sending connection signals to backend, so it will know the user's still online
  */
 function keepConectionAlive() {
-    console.log("keepConectionAlive()")
     GLOBAL.conectionIntervalID = setInterval(() => {
-        console.log("keeping alive");
         GLOBAL.api.post("/status", { name: GLOBAL.username }).catch(error => {
             console.log("Falha na conexão");
             console.log(error.toJSON());
@@ -42,12 +39,8 @@ function keepConectionAlive() {
  * Gets all the messages sended to the backend every three seconds and sends its data to GLOBAL object
  */
 function getMessages() {
-    console.log("getMessages()")
     GLOBAL.messagesIntervalID = setInterval(async () => {
-        console.log("getting new messages")
         const response = await GLOBAL.api.get("/messages");
-        console.log("data received: ")
-        console.log(response.data)
         GLOBAL.messages = response.data;
         updateDisplayedMessagesManager();
     }, 3000)
@@ -81,7 +74,6 @@ function areTheseObjectsEqual(objOne, objTwo) {
  * them on screen and updates the apps cache (GLOBAL object).
  */
 function updateDisplayedMessagesManager() {
-    console.log("updateDisplayedMessagesManager()")
     const newMessages = wichMessagesShouldBeAddedInHtml();
     newMessages.map(message => {
         const htmlMessage = generateMessageHTML(message);
@@ -96,7 +88,6 @@ function updateDisplayedMessagesManager() {
  * @return {Array<object>} array of objects that represents the messages data that were not diplayed yet
  */
 function wichMessagesShouldBeAddedInHtml() {
-    console.log("wichMessagesShouldBeAddedInHtml()")
     if(GLOBAL.renderedMessages.length === 0) {
         GLOBAL.renderedMessages = Array.from(GLOBAL.messages);
         return GLOBAL.messages;
@@ -107,7 +98,6 @@ function wichMessagesShouldBeAddedInHtml() {
     for(let i=GLOBAL.messages.length-1; i>=0; i--) {
         if(!areTheseObjectsEqual(GLOBAL.messages[i], lastRenderedMessage)) {
             newMessages.push(GLOBAL.messages[i]);
-            console.log("adicionando obj: " + i);
         } else {
             return newMessages;
         }
@@ -118,7 +108,6 @@ function wichMessagesShouldBeAddedInHtml() {
  * Gets all the active users when its called and sends its data to GLOBAL object
  */
 async function getOnlineUsers() {
-    console.log("getOnlineUsers()")
     try {
         const response = await GLOBAL.api.get("/participants");
         GLOBAL.onlineUsers = response.data;
@@ -136,7 +125,7 @@ function displayOnlineUsers() {
     const onlineUsers = document.querySelector(".online-users");
     GLOBAL.onlineUsers.map(user => {
         const onlineUserHtmlTemplate = (
-            `<li>
+            `<li class="online-user" id="${user.name}" onclick="changeMessageReceiver(this, event)">
                 <div class="menu-left-section">
                     <img class="menu-left-ico" src="../assets/icos/singleUser.png">
                     <span>${user.name}</span>
@@ -195,7 +184,6 @@ function sendMessage() {
  * Changes the visibility of the messages sent from now on.
  */
 function changeVisibility(element, event) {
-    console.log(element);
     event.stopPropagation();
     if(element.id === "public-option") {
         document.querySelector("#reserved-option > .menu-right-ico").style.visibility = "hidden";
@@ -208,3 +196,16 @@ function changeVisibility(element, event) {
     }
 }
 
+function changeMessageReceiver(element, event) {
+    event.stopPropagation();
+    unselectAllOnlineUsers();
+    element.querySelector(".menu-right-ico").style.visibility = "visible";
+    GLOBAL.messageConfig.to = element.id;
+}
+
+function unselectAllOnlineUsers() {
+    document.querySelectorAll(".online-user").forEach(element => {
+        element.querySelector(".menu-right-ico").style.visibility = "hidden";
+    })
+    document.querySelector("#Todos > .menu-right-ico").style.visibility = "hidden";
+}
