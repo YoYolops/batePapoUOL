@@ -5,7 +5,14 @@ function startChatApp() {
     keepConectionAlive();
     getMessages();
     getOnlineUsers();
+    addEventListeners();
 };
+
+function addEventListeners() {
+    document.querySelector("footer > textarea").addEventListener("keypress", event => {
+        if(event.key === "Enter") sendMessage();
+    })
+}
 
 function toggleMenu(event) {
     if(event.target.tagName === "ASIDE" || event.target.tagName === "IMG") {
@@ -149,8 +156,6 @@ function sendMessage() {
         text: typedMessage,
         type: GLOBAL.messageConfig.type
     }
-
-    console.log(messageJSON)
-
     GLOBAL.api.post("/messages", messageJSON);
+    document.querySelector("footer > textarea").value = "";
 }
