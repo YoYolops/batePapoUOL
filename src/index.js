@@ -39,6 +39,19 @@ function getMessages() {
     }, 3000)
 }
 
+function updateDisplayedMessagesManager() {
+    const alreadyDisplayedMessages = GLOBAL.renderedMessages;
+    const messagesReceivedFromBackend = GLOBAL.messages.length;
+
+    if(alreadyDisplayedMessages < messagesReceivedFromBackend) {
+        const messages = GLOBAL.messages.slice(alreadyDisplayedMessages);
+        messages.map(message => {
+            const htmlMessage = generateMessageHTML(message);
+            displayMessage(htmlMessage);
+        })
+    }
+}
+
 /** 
  * Gets all the active users when its called and sends its data to GLOBAL object
  */
@@ -65,3 +78,26 @@ function displayOnlineUsers() {
         `)
     })
 }
+
+/** 
+ * creates a HTML string that represents the message.
+ * @param {Object} messageJSON the JSON that comes from the backend, representing a single message data
+ * @return {String} the HTML template string that can be used to display the message on the screen
+ */
+function generateMessageHTML(messageJSON) {
+    const { from, to, text, type, time } = message;
+    const messageTemplate = (
+        `<div class="${type}">
+            <span class="message-time">${time}</span>
+            <span class="message-from-to"><strong>${from}</strong> para <strong>${to}</strong>:</span>
+            <p class="message-text">${text}</p>
+        </div>`
+    )
+    return messageTemplate;
+}
+
+function displayMessage(messageHTML) {
+    const messageContainer = document.querySelector(".messages-container");
+    messageContainer.insertAdjacentHTML("beforeend", messageHTML);
+}
+
