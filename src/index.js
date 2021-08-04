@@ -53,6 +53,12 @@ function getMessages() {
     }, 3000)
 }
 
+/** 
+ * Makes a deepest comparation between two objects than "===" operator, wich is a shallow compare
+ * @param {object} objOne
+ * @param {object} objTwo
+ * @return {boolean} true if both objects have the same keys and values in those keys, false otherwise
+ */
 function areTheseObjectsEqual(objOne, objTwo) {
     if(Object.keys(objOne).length > Object.keys(objTwo).length) {
         for(let key in objOne) {
@@ -71,8 +77,8 @@ function areTheseObjectsEqual(objOne, objTwo) {
 }
 
 /** 
- * Verify if the server sended messages there were not inserted on screen yet,
- * if there is any, this function starts the procedures to do reder them.
+ * Manages the functions that checks the new messages and, if there is any new messages, renders
+ * them on screen and updates the apps cache (GLOBAL object).
  */
 function updateDisplayedMessagesManager() {
     console.log("updateDisplayedMessagesManager()")
@@ -84,6 +90,11 @@ function updateDisplayedMessagesManager() {
     GLOBAL.renderedMessages = Array.from(GLOBAL.messages);
 }
 
+
+/** 
+ * Iterates over the messages received from server and checks wich ones are new
+ * @return {Array<object>} array of objects that represents the messages data that were not diplayed yet
+ */
 function wichMessagesShouldBeAddedInHtml() {
     console.log("wichMessagesShouldBeAddedInHtml()")
     if(GLOBAL.renderedMessages.length === 0) {
@@ -166,6 +177,7 @@ function displayMessage(messageHTML) {
     }
 }
 
+
 function sendMessage() {
     const typedMessage = document.querySelector("footer > textarea").value;
     const messageJSON = {
@@ -178,6 +190,10 @@ function sendMessage() {
     document.querySelector("footer > textarea").value = "";
 }
 
+
+/** 
+ * Changes the visibility of the messages sent from now on.
+ */
 function changeVisibility(element, event) {
     console.log(element);
     event.stopPropagation();
