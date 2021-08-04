@@ -19,10 +19,6 @@ strong {
     display: none !important;
 }
 
-.default {
-    visibility: visible;
-}
-
 #entry-screen {
     height: 100vh;
     width: 100vw;
@@ -186,6 +182,10 @@ li {
 .menu-right-ico {
     width: 20px;
     visibility: hidden;
+}
+
+.menu-right-ico.default {
+    visibility: visible;
 }
 
 

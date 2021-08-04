@@ -15,7 +15,8 @@ function addEventListeners() {
 }
 
 function toggleMenu(event) {
-    console.log(event.target)
+    event.stopPropagation();
+    console.log("toggleMenu()");
     if(event.target.tagName === "ASIDE" || event.target.className === "users-icon") {
         document.querySelector("#menu-container").classList.toggle("active");
         document.querySelector("#menu").classList.toggle("active");
@@ -29,13 +30,11 @@ function keepConectionAlive() {
     console.log("keepConectionAlive()")
     GLOBAL.conectionIntervalID = setInterval(() => {
         console.log("keeping alive");
-        try {
-            GLOBAL.api.post("/status", { name: GLOBAL.username })
-        } catch(error) {
-            console.log("Falha na conexão: ");
-            console.log(error);
+        GLOBAL.api.post("/status", { name: GLOBAL.username }).catch(error => {
+            console.log("Falha na conexão");
+            console.log(error.toJSON());
             history.go();
-        }
+        })
     }, 5000)
 }
 
@@ -179,8 +178,9 @@ function sendMessage() {
     document.querySelector("footer > textarea").value = "";
 }
 
-function changeVisibility(element) {
+function changeVisibility(element, event) {
     console.log(element);
+    event.stopPropagation();
     if(element.id === "public-option") {
         document.querySelector("#reserved-option > .menu-right-ico").style.visibility = "hidden";
         document.querySelector("#public-option > .menu-right-ico").style.visibility = "visible";
