@@ -19,8 +19,8 @@ strong {
     display: none !important;
 }
 
-.invisible {
-    visibility: hidden;
+.default {
+    visibility: visible;
 }
 
 #entry-screen {
@@ -133,7 +133,7 @@ strong {
     top: 0;
     right: -50000px;
     bottom: 0;
-    transition: background-color 0.1s ease-in-out 0.1s;
+    transition: background-color 0.15s ease-in-out 0.15s;
 }
 
 #menu-container.active {
@@ -147,13 +147,13 @@ strong {
     right: -500px;
     height: 100vh;
     width: 270px;
+    padding: 0px 20px;
     background-color: rgba(255, 255, 255, 1);
     transition: right 0.1s ease-in-out 0.1s;
 }
 
 .menu.active {
     right: 0;
-    padding: 0px 20px;
 }
 
 .menu h3 {
@@ -169,6 +169,7 @@ li {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 10px;
 }
 
 .menu-left-section {
@@ -184,7 +185,9 @@ li {
 
 .menu-right-ico {
     width: 20px;
+    visibility: hidden;
 }
+
 
 footer {
     height: 80px;

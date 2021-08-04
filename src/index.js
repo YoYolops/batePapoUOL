@@ -15,7 +15,8 @@ function addEventListeners() {
 }
 
 function toggleMenu(event) {
-    if(event.target.tagName === "ASIDE" || event.target.tagName === "IMG") {
+    console.log(event.target)
+    if(event.target.tagName === "ASIDE" || event.target.className === "users-icon") {
         document.querySelector("#menu-container").classList.toggle("active");
         document.querySelector("#menu").classList.toggle("active");
     }
@@ -28,7 +29,13 @@ function keepConectionAlive() {
     console.log("keepConectionAlive()")
     GLOBAL.conectionIntervalID = setInterval(() => {
         console.log("keeping alive");
-        GLOBAL.api.post("/status", { name: GLOBAL.username })
+        try {
+            GLOBAL.api.post("/status", { name: GLOBAL.username })
+        } catch(error) {
+            console.log("Falha na conexão: ");
+            console.log(error);
+            history.go();
+        }
     }, 5000)
 }
 
@@ -118,7 +125,15 @@ async function getOnlineUsers() {
 function displayOnlineUsers() {
     const onlineUsers = document.querySelector(".online-users");
     GLOBAL.onlineUsers.map(user => {
-        const onlineUserHtmlTemplate = `<li><img src="../assets/icos/singleUser.png"><span>${user.name}</span><img src="../assets/icos/verify.png"></li>`;
+        const onlineUserHtmlTemplate = (
+            `<li>
+                <div class="menu-left-section">
+                    <img class="menu-left-ico" src="../assets/icos/singleUser.png">
+                    <span>${user.name}</span>
+                </div>
+                <img class="menu-right-ico" src="../assets/icos/verify.png">
+            </li>`
+        )
         onlineUsers.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
     })
 }
@@ -146,6 +161,10 @@ function generateMessageHTML(messageJSON) {
 function displayMessage(messageHTML) {
     const messageContainer = document.querySelector(".messages-container");
     messageContainer.insertAdjacentHTML("beforeend", messageHTML);
+
+    if(window.pageYOffset >= messageContainer.scrollHeight - window.innerHeight - 160) {
+        document.querySelector(".message-box:last-child").scrollIntoView();
+    }
 }
 
 function sendMessage() {
@@ -159,3 +178,17 @@ function sendMessage() {
     GLOBAL.api.post("/messages", messageJSON);
     document.querySelector("footer > textarea").value = "";
 }
+
+function changeVisibility(element) {
+    console.log(element);
+    if(element.id === "public-option") {
+        document.querySelector("#reserved-option > .menu-right-ico").style.visibility = "hidden";
+        document.querySelector("#public-option > .menu-right-ico").style.visibility = "visible";
+        GLOBAL.messageConfig.type = "message";
+    } else {
+        document.querySelector("#public-option > .menu-right-ico").style.visibility = "hidden";
+        document.querySelector("#reserved-option > .menu-right-ico").style.visibility = "visible";
+        GLOBAL.messageConfig.type = "private_message";
+    }
+}
+
