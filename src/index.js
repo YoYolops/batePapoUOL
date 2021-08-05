@@ -93,15 +93,23 @@ function wichMessagesShouldBeAddedInHtml() {
         return GLOBAL.messages;
     }
 
+    const onlineUsersThatShouldBeUpdated = [];
     const newMessages = [];
     const lastRenderedMessage = GLOBAL.renderedMessages[GLOBAL.renderedMessages.length - 1];
     for(let i=GLOBAL.messages.length-1; i>=0; i--) {
         if(!areTheseObjectsEqual(GLOBAL.messages[i], lastRenderedMessage)) {
             newMessages.push(GLOBAL.messages[i]);
+            GLOBAL.messages[i].type === "status"
+                ? onlineUsersThatShouldBeUpdated.push(GLOBAL.messages[i])
+                : void(0)
         } else {
-            return newMessages;
+            break;
         }
     }
+    console.log("onlineUsersThatShouldBeUpdated: ")
+    console.log(onlineUsersThatShouldBeUpdated)
+    updateOnlineUsersBasedOnStatusMessages(Array.from(onlineUsersThatShouldBeUpdated));
+    return newMessages;
 }
 
 /** 
@@ -118,22 +126,40 @@ async function getOnlineUsers() {
     }
 }
 
+function generateOnlineUserHtmlTemplate(username) {
+    const onlineUserHtmlTemplate = (
+        `<li class="online-user" id="${username}" onclick="changeMessageReceiver(this, event)">
+            <div class="menu-left-section">
+                <img class="menu-left-ico" src="../assets/icos/singleUser.png">
+                <span>${username}</span>
+            </div>
+            <img class="menu-right-ico" src="../assets/icos/verify.png">
+        </li>`
+    )
+    return onlineUserHtmlTemplate;
+}
+
 /** 
  * Inserts the online users data into DOM
  */
-function displayOnlineUsers() {
+ function displayOnlineUsers() {
     const onlineUsers = document.querySelector(".online-users");
     GLOBAL.onlineUsers.map(user => {
-        const onlineUserHtmlTemplate = (
-            `<li class="online-user" id="${user.name}" onclick="changeMessageReceiver(this, event)">
-                <div class="menu-left-section">
-                    <img class="menu-left-ico" src="../assets/icos/singleUser.png">
-                    <span>${user.name}</span>
-                </div>
-                <img class="menu-right-ico" src="../assets/icos/verify.png">
-            </li>`
-        )
+        const onlineUserHtmlTemplate = generateOnlineUserHtmlTemplate(user.name);
         onlineUsers.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
+    })
+}
+
+function updateOnlineUsersBasedOnStatusMessages(messages) {
+    const onlineUsersContainer = document.querySelector(".online-users");
+    messages.forEach(message => {
+        if(message.text === "sai da sala...") {
+            console.log(document.querySelector(`#${message.from}`))
+            document.querySelector(`#${message.from}`).remove();
+        } else if(message.text === "entra na sala..."){
+            const onlineUserHtmlTemplate = generateOnlineUserHtmlTemplate(message.from);
+            onlineUsersContainer.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
+        }
     })
 }
 
