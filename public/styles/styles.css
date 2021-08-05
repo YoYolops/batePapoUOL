@@ -12,7 +12,7 @@ body {
 }
 
 strong {
-    font-weight: bolder;
+    font-weight: bolder !important;
 }
 
 .hidden {
@@ -99,6 +99,7 @@ strong {
 
 .messages-container {
     padding: 100px 0px 90px 0px;
+    color: black;
 }
 
 .message-box {
@@ -106,6 +107,16 @@ strong {
     padding: 15px 10px;
     border-radius: 3px;
     margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.message-box > p {
+    overflow-y: hidden;
+}
+
+.message-time {
+    color: rgb(197, 197, 197);
+    font-size: 14px;
 }
 
 .status {
@@ -119,7 +130,6 @@ strong {
 .message {
     background-color: #fff;
 }
-
 
 #menu-container {
     width: 100%;

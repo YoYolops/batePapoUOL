@@ -118,7 +118,7 @@ function wichMessagesShouldBeAddedInHtml() {
         }
     }
     //this approach prevents the need of making another request to /participants end point
-    updateOnlineUsersBasedOnStatusMessages(Array.from(onlineUsersThatShouldBeUpdated));
+    updateOnlineUsersBasedOnStatusMessages(onlineUsersThatShouldBeUpdated);
     return newMessages;
 }
 
@@ -132,9 +132,9 @@ function wichMessagesShouldBeAddedInHtml() {
     const { from, to, text, type, time } = messageJSON;
     const messageTemplate = (
         `<div class="message-box ${type}">
-            <span class="message-time">(${time})</span>
-            <span class="message-from-to"><strong>${from}</strong> para <strong>${to}</strong>:</span>
-            <p class="message-text">${text}</p>
+            <p class="message-content">
+                <strong class="message-time">(${time})</strong> <strong>${from}</strong> para <strong>${to}</strong>: ${text}
+            </p>
         </div>`
     )
     return messageTemplate;
@@ -190,8 +190,10 @@ function generateOnlineUserHtmlTemplate(usernameInput) {
  function displayOnlineUsers() {
     const onlineUsers = document.querySelector(".online-users");
     GLOBAL.onlineUsers.map(user => {
-        const onlineUserHtmlTemplate = generateOnlineUserHtmlTemplate(user.name);
-        onlineUsers.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
+        if(user.name !== GLOBAL.username) {
+            const onlineUserHtmlTemplate = generateOnlineUserHtmlTemplate(user.name);
+            onlineUsers.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
+        }
     })
 }
 
@@ -203,14 +205,14 @@ function generateOnlineUserHtmlTemplate(usernameInput) {
  */
 function updateOnlineUsersBasedOnStatusMessages(messages) {
     const onlineUsersContainer = document.querySelector(".online-users");
-    console.log(messages)
+
     for(let i = 0; i < messages.length; i++) {
         let usernameFrom = messages[i].from.replace(/\s/g, '');
         if(messages[i].text === "sai da sala...") {
-            const elementToRemove = document.querySelector(`#usr-${usernameFrom}`)
-            console.log("retirando id:")
-            console.log(`#usr-${usernameFrom}`)
-            elementToRemove.remove();
+            const elementToRemove = document.querySelector(`li[id="usr-${usernameFrom}"]`)
+            elementToRemove
+            ? elementToRemove.remove()
+            : void(0)  
         } else if(messages[i].text === "entra na sala..."){
             const onlineUserHtmlTemplate = generateOnlineUserHtmlTemplate(usernameFrom);
             onlineUsersContainer.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);

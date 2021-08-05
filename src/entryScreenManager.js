@@ -10,12 +10,16 @@ function setGlobalUsername(username) {
 
 async function isValidUserName(username) {
     if(username !== "") {
-        const response = await GLOBAL.api.post("/participants", {
-            name: username
-        })
-        if(response.status === 200) return true
+        try {
+            const response = await GLOBAL.api.post("/participants", {
+                name: username
+            })
+            if(response.status === 200) return true
+        } catch (error) {
+            console.log("Nome já existe")
+            return false;
+        }
     }
-    return false
 }
 
 /** 
@@ -39,10 +43,11 @@ function askValidUsername() {
 /** 
  * Finishes the login process if a valid username was inserted
  */
-function login() {
+async function login() {
     const username = getUserName();
+    const isValidLogin = await isValidUserName(username);
 
-    if(isValidUserName(username)) {
+    if(isValidLogin) {
         setGlobalUsername(username);
         hideEntryScreen();
         startChatApp();
