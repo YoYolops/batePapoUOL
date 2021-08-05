@@ -3,13 +3,13 @@
  */
 function startChatApp() {
     keepConectionAlive();
-    getMessages();
+    getMessagesEveryThreeSeconds();
     getOnlineUsers();
     addEventListeners();
 };
 
 function addEventListeners() {
-    document.querySelector("footer > textarea").addEventListener("keypress", event => {
+    document.querySelector(".footer-top-section > textarea").addEventListener("keypress", event => {
         if(event.key === "Enter") sendMessage();
     })
 }
@@ -37,15 +37,17 @@ function keepConectionAlive() {
 }
 
 
+function getMessagesEveryThreeSeconds() {
+    GLOBAL.messagesIntervalID = setInterval(getMessages, 3000)
+}
+
 /** 
- * Gets all the messages sended to the backend every three seconds and sends its data to GLOBAL object
+ * Get and stores messages data from server
  */
-function getMessages() {
-    GLOBAL.messagesIntervalID = setInterval(async () => {
-        const response = await GLOBAL.api.get("/messages");
-        GLOBAL.messages = response.data;
-        updateDisplayedMessagesManager();
-    }, 3000)
+async function getMessages() {
+    const response = await GLOBAL.api.get("/messages");
+    GLOBAL.messages = response.data;
+    updateDisplayedMessagesManager();
 }
 
 
@@ -223,16 +225,20 @@ function updateOnlineUsersBasedOnStatusMessages(messages) {
     }
 }
 
-function sendMessage() {
-    const typedMessage = document.querySelector("footer > textarea").value;
+async function sendMessage() {
+    const typedMessage = document.querySelector(".footer-top-section > textarea").value;
+    
+    if(typedMessage === "") return;
+
     const messageJSON = {
         from: GLOBAL.username,
         to: GLOBAL.messageConfig.to ?? "Todos" ,
         text: typedMessage,
         type: GLOBAL.messageConfig.type
     }
-    GLOBAL.api.post("/messages", messageJSON);
-    document.querySelector("footer > textarea").value = "";
+    await GLOBAL.api.post("/messages", messageJSON);
+    getMessages();
+    document.querySelector(".footer-top-section > textarea").value = "";
 }
 
 
@@ -241,22 +247,32 @@ function sendMessage() {
  */
 function changeVisibility(element, event) {
     event.stopPropagation();
+    const text = document.querySelector("#sending-to").textContent;
+
     if(element.id === "public-option") {
         document.querySelector("#reserved-option > .menu-right-ico").style.visibility = "hidden";
         document.querySelector("#public-option > .menu-right-ico").style.visibility = "visible";
         GLOBAL.messageConfig.type = "message";
+        document.querySelector("#sending-to").textContent = text.replace(" (reservadamente)", "")
     } else {
         document.querySelector("#public-option > .menu-right-ico").style.visibility = "hidden";
         document.querySelector("#reserved-option > .menu-right-ico").style.visibility = "visible";
         GLOBAL.messageConfig.type = "private_message";
+        document.querySelector("#sending-to").textContent += (" (reservadamente)");
     }
 }
 
 function changeMessageReceiver(element, event) {
     event.stopPropagation();
+    const newReceiver = element.querySelector(".menu-left-section > span")?.textContent;
+
     unselectAllOnlineUsers();
     element.querySelector(".menu-right-ico").style.visibility = "visible";
     GLOBAL.messageConfig.to = element.id.split("-")[1];
+
+    GLOBAL.messageConfig.type === "private_message"
+        ? document.querySelector("#sending-to").textContent = `Enviando para ${newReceiver ?? "Todos"} (reservadamente)`
+        : document.querySelector("#sending-to").textContent = `Enviando para ${newReceiver ?? "Todos"}`;
 }
 
 function unselectAllOnlineUsers() {

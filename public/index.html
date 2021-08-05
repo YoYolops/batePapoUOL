@@ -30,8 +30,11 @@
             <main class="messages-container"></main>
             
             <footer>
-                <textarea type="text" placeholder="Escreva aqui..." ></textarea>
-                <img class="send-ico" src="../assets/icos/send.png" alt="send icon" onclick="sendMessage()">
+                <div class="footer-top-section">
+                    <textarea type="text" placeholder="Escreva aqui..." ></textarea>
+                    <img class="send-ico" src="../assets/icos/send.png" alt="send icon" onclick="sendMessage()">
+                </div>
+                <p id="sending-to">Enviando para Todos</p>
             </footer>
         </div>
         <aside onclick="toggleMenu(event)" id="menu-container" class="menu-container">
