@@ -48,9 +48,12 @@ async function login() {
     const isValidLogin = await isValidUserName(username);
 
     if(isValidLogin) {
+        startLoading();
         setGlobalUsername(username);
-        hideEntryScreen();
         startChatApp();
+        setTimeout(() => {
+            hideEntryScreen();
+        }, 3000)
     } else {
         askValidUsername();
     }
@@ -62,4 +65,16 @@ async function login() {
 function hideEntryScreen() {
     document.querySelector("#entry-screen").className = "hidden";
     document.querySelector("#main-content-container").className = "";
+}
+
+function startLoading() {
+    const loadingSpinner = document.querySelector("#loading-spinner");
+    const usernameInput = document.querySelector("#username");
+    const entryButton = document.querySelector("#entry-screen > button");
+    const entryText = document.querySelector("#entry-text");
+
+    loadingSpinner.className = "";
+    entryText.className = "";
+    usernameInput.className = "hidden";
+    entryButton.className = "hidden";
 }
