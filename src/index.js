@@ -108,6 +108,7 @@ function wichMessagesShouldBeAddedInHtml() {
     }
     console.log("onlineUsersThatShouldBeUpdated: ")
     console.log(onlineUsersThatShouldBeUpdated)
+    //this approach prevents the need of making another request to /participants end point
     updateOnlineUsersBasedOnStatusMessages(Array.from(onlineUsersThatShouldBeUpdated));
     return newMessages;
 }
@@ -140,7 +141,8 @@ function generateOnlineUserHtmlTemplate(username) {
 }
 
 /** 
- * Inserts the online users data into DOM
+ * Inserts the online users data into DOM, only runs a single time, when app is started.
+ * Afterwards, updates are inserted through updateOnlineUsersBasedOnStatusMessages()
  */
  function displayOnlineUsers() {
     const onlineUsers = document.querySelector(".online-users");
@@ -150,6 +152,11 @@ function generateOnlineUserHtmlTemplate(username) {
     })
 }
 
+/** 
+ * Receive the status messages sent from server and, based on them, see wich users should be
+ * removed from ul.online-users and wich should be added.
+ * @param {Array<object>} messages the array of new status messages
+ */
 function updateOnlineUsersBasedOnStatusMessages(messages) {
     const onlineUsersContainer = document.querySelector(".online-users");
     messages.forEach(message => {
