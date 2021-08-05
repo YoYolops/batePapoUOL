@@ -80,8 +80,11 @@ function areTheseObjectsEqual(objOne, objTwo) {
 function updateDisplayedMessagesManager() {
     const newMessages = wichMessagesShouldBeAddedInHtml();
     newMessages.map(message => {
-        const htmlMessage = generateMessageHTML(message);
-        displayMessage(htmlMessage);
+        message.type === "private_message" &&
+        message.from !== GLOBAL.username &&
+        message.to !== GLOBAL.username
+        ? void(0)
+        : displayMessage(generateMessageHTML(message))
     })
     GLOBAL.renderedMessages = Array.from(GLOBAL.messages);
 }
@@ -207,14 +210,14 @@ function updateOnlineUsersBasedOnStatusMessages(messages) {
     const onlineUsersContainer = document.querySelector(".online-users");
 
     for(let i = 0; i < messages.length; i++) {
-        let usernameFrom = messages[i].from.replace(/\s/g, '');
+        let cleanedFromUsername = messages[i].from.replace(/\s/g, '');
         if(messages[i].text === "sai da sala...") {
-            const elementToRemove = document.querySelector(`li[id="usr-${usernameFrom}"]`)
+            const elementToRemove = document.querySelector(`li[id="usr-${cleanedFromUsername}"]`)
             elementToRemove
             ? elementToRemove.remove()
             : void(0)  
         } else if(messages[i].text === "entra na sala..."){
-            const onlineUserHtmlTemplate = generateOnlineUserHtmlTemplate(usernameFrom);
+            const onlineUserHtmlTemplate = generateOnlineUserHtmlTemplate(messages[i].from);
             onlineUsersContainer.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
         }
     }
@@ -228,7 +231,6 @@ function sendMessage() {
         text: typedMessage,
         type: GLOBAL.messageConfig.type
     }
-    console.log(messageJSON)
     GLOBAL.api.post("/messages", messageJSON);
     document.querySelector("footer > textarea").value = "";
 }
