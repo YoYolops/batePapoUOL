@@ -160,7 +160,8 @@ function displayMessage(messageHTML) {
 
 
 /** 
- * Gets all the active users when its called and sends its data to GLOBAL object
+ * Gets all the active users when its called and sends its data to GLOBAL object. This function
+ * only runs a single time, when the app is first started
  */
 async function getOnlineUsers() {
     try {

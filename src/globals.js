@@ -9,7 +9,7 @@ let GLOBAL = {
     logged: false, // if the user's logged
     onlineUsers: [],
     messages: [],
-    renderedMessages: [], //the ammount of messages being displayed on screen
+    renderedMessages: [], //the last hundred messages displayed on screen
     api: axios.create({
         baseURL: "https://mock-api.bootcamp.respondeai.com.br/api/v3/uol"
     })
