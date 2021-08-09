@@ -166,8 +166,7 @@ function displayMessage(messageHTML) {
 async function getOnlineUsers() {
     try {
         const response = await GLOBAL.api.get("/participants");
-        GLOBAL.onlineUsers = response.data;
-        displayOnlineUsers();
+        displayOnlineUsers(response.data);
     } catch (error) {
         console.log("error in getOnlineUsers()");
         console.log(error);
@@ -193,12 +192,12 @@ function generateOnlineUserHtmlTemplate(usernameInput) {
  * Inserts the online users data into DOM, only runs a single time, when app is started.
  * Afterwards, updates are inserted through updateOnlineUsersBasedOnStatusMessages()
  */
- function displayOnlineUsers() {
-    const onlineUsers = document.querySelector(".online-users");
-    GLOBAL.onlineUsers.map(user => {
+ function displayOnlineUsers(onlineUsers) {
+    const onlineUsersContainer = document.querySelector(".online-users");
+    onlineUsers.map(user => {
         if(user.name !== GLOBAL.username) {
             const onlineUserHtmlTemplate = generateOnlineUserHtmlTemplate(user.name);
-            onlineUsers.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
+            onlineUsersContainer.insertAdjacentHTML("beforeend", onlineUserHtmlTemplate);
         }
     })
 }

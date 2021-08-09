@@ -7,7 +7,6 @@ let GLOBAL = {
     conectionIntervalID: "", //ID of the setInterval that keeps connection alive
     messagesIntervalID: "", // ID of the interval that updates messages data
     logged: false, // if the user's logged
-    onlineUsers: [],
     messages: [],
     renderedMessages: [], //the last hundred messages displayed on screen
     api: axios.create({
